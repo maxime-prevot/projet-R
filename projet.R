@@ -101,8 +101,16 @@ plot(rules, method="graph", engine='interactive', shading=NA)
 #Insertion des données
 projetResponse <- read.csv("Data Projet.csv", header = TRUE, sep = ",", dec = ".", stringsAsFactors = T)
 
+
+projetResponse$AGE <- as.factor(projetResponse$AGE)
+projetResponse$ADDRESS <- as.factor(projetResponse$ADDRESS)
+projetResponse$INCOME <- as.factor(projetResponse$INCOME)
+projetResponse$CAR <- as.factor(projetResponse$CAR)
+projetResponse$EMPLOY <- as.factor(projetResponse$EMPLOY)
+projetResponse$RESIDE <- as.factor(projetResponse$RESIDE)
+
 #Création des régles d'associations
-rules2 <- apriori(projetResponse, parameter = list(supp = 0.02, conf = 0.3, target ="rules", minlen=2))
+rules2 <- apriori(projetResponse, parameter = list(supp = 0.15, conf = 0.5, target ="rules", minlen=2, maxlen=20, maxtime=20))
 
 #Transformation en dataframe pour manipulations
 df_rules2 <- DATAFRAME(rules2)
