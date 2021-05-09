@@ -422,7 +422,7 @@ test_nnet <- function(arg1, arg2, arg3, arg4, arg5){
   print(table(projet_ET$RESPONSE, nn_class))
   
   # Test des classifeurs : probabilites pour chaque prediction
-  nn_prob <- predict(nn, projet_ET, type="raw")
+  nn_prob <- predict(nn, projet_ET, type="prob")
   
   # Courbe ROC 
   nn_pred <- prediction(nn_prob[,1], projet_ET$RESPONSE)
@@ -476,3 +476,40 @@ test_nb(0, FALSE, FALSE, "red")
 test_nb(20, FALSE, TRUE, "blue")
 test_nb(0, TRUE, TRUE, "green")
 test_nb(20, TRUE, TRUE, "orange")
+
+
+#------------------------------------------------------#
+# Prédiction sur l'ensemble à définir avec Naive Bayes #
+#------------------------------------------------------#
+
+#Chargement des données test
+projet_test <- read.csv("Data Projet New.csv", header = TRUE, sep = ",", dec = ".", stringsAsFactors = T)
+
+#Apprentissage
+nv_bayes <- naive_bayes(RESPONSE~., projet, laplace = 20, usekernel = FALSE)
+
+
+#------------------------------------------------------#
+# Application de Naive Bayes à l'ensemble de test      #
+#------------------------------------------------------#
+
+#Prediction classe
+nv_bayes_class <- predict(nv_bayes, projet_test, type="class")
+
+#Probabilites pour chaque prediction
+nv_bayes_prob <- predict(nv_bayes, projet_test, type="prob")
+
+#------------------------------------------------------#
+# Enregistrement prédictions                           #
+#------------------------------------------------------#
+
+#Ajout des predictions sur la une nouvelle colonne de projet_test
+projet_test$PREDICTION <- nv_bayes_class
+
+#Ajout des probabilites sur la derniere colonne de projet_test
+projet_test$PROBABILITE_OUI <- nv_bayes_prob[,2]
+
+#Ajout des probabilites sur la derniere colonne de projet_test
+projet_test$PROBABILITE_NON <- nv_bayes_prob[,1]
+#Enregistrement du fichier de resultats
+write.table(projet_test, file="PREVOT_Maxime_MARTIN_François.csv", sep = ",", dec = ".", row.names = F)
